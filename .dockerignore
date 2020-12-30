@@ -1,0 +1,7 @@
+build.cmd
+.gitignore
+.travis.yml
+Dockerfile
+docker-compose.yml
+LICENSE
+tests

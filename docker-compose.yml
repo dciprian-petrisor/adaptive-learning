@@ -1,0 +1,39 @@
+version: "3.9"
+
+networks:
+  adaptive_learning_network:
+    driver: bridge
+services:
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: adaptive_learning
+      POSTGRES_PASSWORD: password
+    networks:
+      adaptive_learning_network:
+    volumes:
+      - pg:/var/lib/postgresql/data
+
+  web:
+    image: adaptive_learning_backend
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      ADAPTIVE_LEARNING_DB_USER: postgres
+      ADAPTIVE_LEARNING_DB_PASSWORD: password
+      ADAPTIVE_LEARNING_DB_NAME: adaptive_learning
+      ADAPTIVE_LEARNING_DB_HOST: postgres
+      ADAPTIVE_LEARNING_DB_PORT: 5432
+      ADAPTIVE_LEARNING_DEBUG: 1 # turns on debug mode
+    networks:
+      adaptive_learning_network:
+    depends_on:
+      - postgres
+    links:
+      - postgres
+
+volumes:
+  pg:
