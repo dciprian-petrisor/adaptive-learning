@@ -8,4 +8,5 @@ dependencies:
   - Django
   - graphene-django
   - psycopg2
+  - python-dotenv
 prefix: C:\Users\dcipr\.conda\envs\adaptive_learning
