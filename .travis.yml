@@ -21,4 +21,4 @@ jobs:
         - docker-compose up -d postgres # start the db
       script:
         - docker pull "$DOCKER_USERNAME"/adaptive_learning_backend:"$IMAGE_TAG"
-        - docker-compose run --rm web chmod +x *.sh && ./test.sh
+        - docker-compose run --rm web ./test.sh

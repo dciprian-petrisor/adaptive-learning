@@ -8,5 +8,5 @@ COPY  --from=build /opt/conda/envs /opt/conda/envs
 WORKDIR /app
 COPY . /app/
 SHELL ["/bin/bash", "-c"]
-RUN ["chmod", "+x", "/usr/src/app/docker-entrypoint.sh"]
+RUN ["chmod", "+x", "/app/*.sh"]
 CMD ["./run.sh"]
