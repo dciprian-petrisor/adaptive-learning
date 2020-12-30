@@ -12,7 +12,7 @@ jobs:
       script:
         - docker-compose build web
         - docker images
-        - docker tag adaptive_learning_backend $DOCKER_USERNAME/adaptive_learning_backend
+        - docker tag adaptive_learning_backend "$DOCKER_USERNAME"/adaptive_learning_backend
         - docker push $DOCKER_USERNAME/adaptive_learning_backend
     - stage: test
       before_script:
