@@ -17,7 +17,7 @@ services:
       - pg:/var/lib/postgresql/data
 
   web:
-    image: petrci1/adaptive_learning_backend
+    image: "${IMAGE_NAME}:${TAG}"
     build: .
     ports:
       - "8000:8000"

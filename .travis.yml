@@ -6,13 +6,14 @@ services:
 jobs:
   include:
     - stage: build
+      env:
+        - TAG="$TRAVIS_COMMIT" # override the default TAG value, which is 'latest', defined in .env file
       before_script:
         - chmod +x *.sh
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
       script:
-        - docker-compose build web
-        - docker images
-        - docker tag adaptive_learning_backend "$DOCKER_USERNAME"/adaptive_learning_backend:"$TRAVIS_COMMIT" # tag img
+        - docker-compose build web # image is built and tagged
+        - docker images # print images
         - docker push "$DOCKER_USERNAME"/adaptive_learning_backend:"$TRAVIS_COMMIT" # push to repo
     - stage: test
       before_script:
