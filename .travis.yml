@@ -12,11 +12,11 @@ jobs:
       script:
         - docker-compose build web
         - docker images
-        - docker tag adaptive_learning_backend "$DOCKER_USERNAME"/adaptive_learning_backend
-        - docker push $DOCKER_USERNAME/adaptive_learning_backend
+        - docker tag adaptive_learning_backend "$DOCKER_USERNAME"/adaptive_learning_backend:"$TRAVIS_COMMIT" # tag img
+        - docker push "$DOCKER_USERNAME"/adaptive_learning_backend:"$TRAVIS_COMMIT" # push to repo
     - stage: test
       before_script:
         - docker-compose up -d postgres # start the db
       script:
-        - docker pull adaptive_learning_backend
+        - docker pull "$DOCKER_USERNAME":adaptive_learning_backend:"$TRAVIS_COMMIT"
         - docker-compose run --rm web ./test.sh
