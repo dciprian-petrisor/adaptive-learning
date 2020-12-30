@@ -8,5 +8,5 @@ COPY  --from=build /opt/conda/envs /opt/conda/envs
 WORKDIR /app
 COPY . /app/
 SHELL ["/bin/bash", "-c"]
-RUN ["chmod", "+x", "/app/*.sh"]
+RUN ["chmod", "+x", "./*.sh"]
 CMD ["./run.sh"]
