@@ -1,12 +1,17 @@
-language: python
+language: generic
 
 services:
   - docker
 
-before_install:
-  - chmod +x test.sh
-  - docker-compose up -d postgres # starts the db
-  - docker-compose build web # build the django app container
-
-script:
-  - docker-compose run web ./test.sh # runs the tests
+jobs:
+  include:
+    - stage: build
+      before_script:
+        - chmod +x *.sh
+      script:
+        - docker-compose build web
+    - stage: test
+      before_script:
+        - docker-compose up -d postgres # start the db
+      script:
+        - docker-compose run web ./test.sh
