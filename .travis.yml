@@ -2,12 +2,13 @@ language: generic
 
 services:
   - docker
+env:
+  jobs:
+    - TAG="$TRAVIS_COMMIT" # default tag value is the commit hash
 
 jobs:
   include:
     - stage: build
-      env:
-        - TAG="$TRAVIS_COMMIT" # override the default TAG value, which is 'latest', defined in .env file
       before_script:
         - chmod +x *.sh
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
@@ -19,5 +20,4 @@ jobs:
       before_script:
         - docker-compose up -d postgres # start the db
       script:
-        - docker pull "$DOCKER_USERNAME":adaptive_learning_backend:"$TRAVIS_COMMIT"
-        - docker-compose run --rm web ./test.sh
+        - docker-compose run --rm --no-build web ./test.sh
