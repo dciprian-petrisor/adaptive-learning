@@ -17,7 +17,7 @@ services:
       - pg:/var/lib/postgresql/data
 
   web:
-    image: "${IMAGE_NAME}:${TAG}"
+    image: "${IMAGE_NAME}:${IMAGE_TAG}"
     build: .
     ports:
       - "8000:8000"

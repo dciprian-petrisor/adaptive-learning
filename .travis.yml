@@ -4,7 +4,7 @@ services:
   - docker
 env:
   jobs:
-    - TAG="$TRAVIS_COMMIT" # default tag value is the commit hash
+    - IMAGE_TAG="$TRAVIS_COMMIT" # default tag value is the commit hash
 
 jobs:
   include:
@@ -15,9 +15,9 @@ jobs:
       script:
         - docker-compose build web # image is built and tagged
         - docker images # print images
-        - docker push "$DOCKER_USERNAME"/adaptive_learning_backend:"$TRAVIS_COMMIT" # push to repo
+        - docker push "$DOCKER_USERNAME"/adaptive_learning_backend:"$IMAGE_TAG" # push to repo
     - stage: test
       before_script:
         - docker-compose up -d postgres # start the db
       script:
-        - docker-compose run --rm --no-build web ./test.sh
+        - docker-compose run --rm web ./test.sh
