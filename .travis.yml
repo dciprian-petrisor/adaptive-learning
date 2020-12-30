@@ -2,9 +2,8 @@ language: generic
 
 services:
   - docker
-
 env:
-  global:
+  jobs:
     - IMAGE_TAG="$TRAVIS_COMMIT" # default tag value is the commit hash
 
 jobs:
@@ -13,7 +12,7 @@ jobs:
       before_script:
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
       script:
-        #- docker pull "$DOCKER_USERNAME"/adaptive_learning_backend # pulls latest image from dockerhub, for caching reasons when building new one
+        - docker pull "$DOCKER_USERNAME"/adaptive_learning_backend # pulls latest image from dockerhub, for caching reasons when building new one
         - docker-compose build web # image is built and tagged
         - docker images # print images
         - docker push "$DOCKER_USERNAME"/adaptive_learning_backend:"$IMAGE_TAG" # push to repo
