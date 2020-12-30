@@ -17,7 +17,7 @@ services:
       - pg:/var/lib/postgresql/data
 
   web:
-    image: adaptive_learning_backend
+    image: petrci1/adaptive_learning_backend
     build: .
     ports:
       - "8000:8000"

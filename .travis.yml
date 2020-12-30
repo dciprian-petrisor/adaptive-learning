@@ -8,10 +8,15 @@ jobs:
     - stage: build
       before_script:
         - chmod +x *.sh
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
       script:
         - docker-compose build web
+        - docker images
+        - docker tag adaptive_learning_backend $DOCKER_USERNAME/adaptive_learning_backend
+        - docker push $DOCKER_USERNAME/adaptive_learning_backend
     - stage: test
       before_script:
         - docker-compose up -d postgres # start the db
       script:
-        - docker-compose run web ./test.sh
+        - docker pull adaptive_learning_backend
+        - docker-compose run --rm web ./test.sh
