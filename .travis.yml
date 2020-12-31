@@ -5,7 +5,7 @@ services:
 env:
   jobs:
     - IMAGE_TAG="$TRAVIS_COMMIT" # default tag value is the commit hash
-    - IMAGE_NAME=""$DOCKER_USERNAME"/adaptive_learning_backend"
+    - IMAGE_NAME="'$DOCKER_USERNAME'/adaptive_learning_backend"
 jobs:
   include:
     - stage: build
