@@ -14,7 +14,7 @@ jobs:
         - echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
       script:
         - docker pull "${IMAGE_NAME}":builder || true # try to pull the latest build layer image
-        - docker build --traget build --cache-from "${IMAGE_NAME}":builder . # build only the build stage
+        - docker build --target build --cache-from "${IMAGE_NAME}":builder . # build only the build stage
         - docker pull "${IMAGE_NAME}:latest" || true # pulls latest image from dockerhub, for caching reasons when building new one
         - docker build --cache-from "${IMAGE_NAME}":builder --cache-from "${IMAGE_NAME}":latest -t "${IMAGE_NAME}":"${IMAGE_TAG}" .   # image is built and tagged
         - docker images # print images
