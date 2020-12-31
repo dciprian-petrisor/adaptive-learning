@@ -13,8 +13,8 @@ jobs:
       before_script:
         - echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
       script:
-        - docker pull "$IMAGE_NAME" # pulls latest image from dockerhub, for caching reasons when building new one
-        - docker build . -t "${IMAGE_NAME}":"${IMAGE_TAG}" # image is built and tagged
+        - docker pull "${IMAGE_NAME}" # pulls latest image from dockerhub, for caching reasons when building new one
+        - docker build . -t "${IMAGE_NAME}":"${IMAGE_TAG}" --cache-from "${IMAGE_NAME}" # image is built and tagged
         - docker images # print images
         - docker push "${IMAGE_NAME}":"${IMAGE_TAG}" # push to repo
     - stage: test
