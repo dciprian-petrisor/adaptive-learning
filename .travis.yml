@@ -4,21 +4,21 @@ services:
   - docker
 env:
   jobs:
-    - IMAGE_TAG="$TRAVIS_COMMIT" # default tag value is the commit hash
-    - IMAGE_NAME="'$DOCKER_USERNAME'/adaptive_learning_backend"
+    - IMAGE_TAG="${TRAVIS_COMMIT}" # default tag value is the commit hash
+    - IMAGE_NAME="${DOCKER_USERNAME}/adaptive_learning_backend"
 jobs:
   include:
     - stage: build
       before_script:
-        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+        - echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
       script:
         - docker pull "$IMAGE_NAME" # pulls latest image from dockerhub, for caching reasons when building new one
-        - docker build . -t "$IMAGE_NAME":"$IMAGE_TAG" # image is built and tagged
+        - docker build . -t "${IMAGE_NAME}":"${IMAGE_TAG}" # image is built and tagged
         - docker images # print images
-        - docker push "$IMAGE_NAME":"$IMAGE_TAG" # push to repo
+        - docker push "${IMAGE_NAME}":"${IMAGE_TAG}" # push to repo
     - stage: test
       before_script:
         - docker-compose up -d postgres # start the db
       script:
-        - docker pull "$DOCKER_USERNAME"/adaptive_learning_backend:"$IMAGE_TAG"
+        - docker pull "${DOCKER_USERNAME}"/adaptive_learning_backend:"${IMAGE_TAG}"
         - docker-compose run --rm web ./test.sh
