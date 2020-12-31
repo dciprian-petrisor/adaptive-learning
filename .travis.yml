@@ -13,10 +13,13 @@ jobs:
       before_script:
         - echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
       script:
-        - docker pull "${IMAGE_NAME}:latest" # pulls latest image from dockerhub, for caching reasons when building new one
-        - docker build --cache-from "${IMAGE_NAME}:latest" -t "${IMAGE_NAME}":"${IMAGE_TAG}" .   # image is built and tagged
+        - docker pull "${IMAGE_NAME}":builder || true # try to pull the latest build layer image
+        - docker build --traget build --cache-from "${IMAGE_NAME}":builder . # build only the build stage
+        - docker pull "${IMAGE_NAME}:latest" || true # pulls latest image from dockerhub, for caching reasons when building new one
+        - docker build --cache-from "${IMAGE_NAME}":builder --cache-from "${IMAGE_NAME}":latest -t "${IMAGE_NAME}":"${IMAGE_TAG}" .   # image is built and tagged
         - docker images # print images
-        - docker push "${IMAGE_NAME}":"${IMAGE_TAG}" # push to repo
+        - docker push "${IMAGE_NAME}":"${IMAGE_TAG}" # push full image to repo
+        - docker push "${IMAGE_NAME}":builder # push newly created builder image as well for caching on subsequent builds
     - stage: test
       before_script:
         - docker-compose up -d postgres # start the db
