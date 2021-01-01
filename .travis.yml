@@ -25,4 +25,4 @@ jobs:
         - docker-compose up -d postgres # start the db
       script:
         - docker pull "${DOCKER_USERNAME}"/adaptive_learning_backend:"${IMAGE_TAG}"
-        - docker-compose run --rm web ./test.sh
+        - docker-compose run -e CC_TEST_REPORTER_ID="${CC_TEST_REPORTER_ID}" -e TRAVIS_TEST_RESULT="${TRAVIS_TEST_RESULT}" --rm web ./test.sh
