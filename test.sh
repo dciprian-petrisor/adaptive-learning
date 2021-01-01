@@ -6,5 +6,4 @@ curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-lin
 chmod +x ./cc-test-reporter # make it executable
 ./cc-test-reporter before-build # run before-build hook
 conda run --no-capture-output -n adaptive_learning coverage run --source='.' manage.py test # run the tests
-conda run --no-capture-output -n adaptive_learning coverage xml # output xml
 ./cc-test-reporter after-build --exit-code "$TRAVIS_TEST_RESULT" # run after build
