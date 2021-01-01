@@ -7,4 +7,5 @@ chmod +x ./cc-test-reporter                                                     
 ./cc-test-reporter before-build                                                             # run before-build hook
 conda run --no-capture-output -n adaptive_learning coverage run --source='.' manage.py test # run the tests
 conda run --no-capture-output -n adaptive_learning coverage xml                             # output xml
-./cc-test-reporter after-build -t coverage.py --exit-code "$TRAVIS_TEST_RESULT"             # run after build
+./cc-test-reporter format-coverage -t coverage.py -o ./coverage.xml
+./cc-test-reporter upload-coverage
