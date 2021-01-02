@@ -15,7 +15,7 @@ def migrate():
     timeout_time = time.time() + 30
     # save the initial time the DB responded
     start_time = None
-    while start_time is None and time.time() < timeout_time:
+    while time.time() < timeout_time:
         with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as sock:
             if sock.connect_ex((host, int(port))) == 0:
                 if start_time is None:
@@ -23,6 +23,8 @@ def migrate():
                     start_time = time.time()
                 elif start_time + 5 > time.time():
                     # migrate and get out of loop if the db responded as active for 5 seconds
+                    sys.argv = ["manage.py", "makemigrations"]
+                    manage.main()
                     sys.argv = ["manage.py", "migrate"]
                     manage.main()
                     break

@@ -4,6 +4,20 @@ networks:
   adaptive_learning_network:
     driver: bridge
 services:
+
+  nginx:
+    image: nginx:1.19.6
+    restart: always
+    ports:
+      - "80:80"
+    networks:
+      adaptive_learning_network:
+    volumes:
+      - nginx-conf:/etc/nginx/conf.d
+      - web-static:/app/static
+    depends_on:
+      - web
+
   postgres:
     image: postgres:13.1
     restart: always
@@ -19,21 +33,23 @@ services:
   web:
     image: "${IMAGE_NAME}:${IMAGE_TAG}"
     build: .
-    ports:
-      - "8000:8000"
     environment:
       ADAPTIVE_LEARNING_DB_USER: postgres
       ADAPTIVE_LEARNING_DB_PASSWORD: password
       ADAPTIVE_LEARNING_DB_NAME: adaptive_learning
       ADAPTIVE_LEARNING_DB_HOST: postgres
       ADAPTIVE_LEARNING_DB_PORT: 5432
-      ADAPTIVE_LEARNING_DEBUG: 1 # turns on debug mode
     networks:
       adaptive_learning_network:
     depends_on:
       - postgres
     links:
       - postgres
+    volumes:
+      - web-static:/app/static
+      - nginx-conf:/app/nginx/conf.d
 
 volumes:
   pg:
+  nginx-conf:
+  web-static:

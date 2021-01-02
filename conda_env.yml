@@ -10,4 +10,7 @@ dependencies:
   - psycopg2
   - python-dotenv
   - coverage
+  - pip:
+      - gunicorn
+      - setproctitle
 prefix: C:\Users\dcipr\.conda\envs\adaptive_learning

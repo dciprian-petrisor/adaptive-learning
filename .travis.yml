@@ -12,17 +12,13 @@ jobs:
     - stage: build
       before_script:
         - echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
+        - chmod +x .travis/build.sh
       script:
-        - docker pull "${IMAGE_NAME}":builder || true # try to pull the latest build layer image
-        - docker build --target build --cache-from "${IMAGE_NAME}":builder -t "${IMAGE_NAME}":builder . # build only the build stage
-        - docker pull "${IMAGE_NAME}:latest" || true # pulls latest image from dockerhub, for caching reasons when building new one
-        - docker build --cache-from "${IMAGE_NAME}":builder --cache-from "${IMAGE_NAME}":latest -t "${IMAGE_NAME}":"${IMAGE_TAG}" .   # image is built and tagged
-        - docker images # print images
-        - docker push "${IMAGE_NAME}":"${IMAGE_TAG}" # push full image to repo
-        - docker push "${IMAGE_NAME}":builder # push newly created builder image as well for caching on subsequent builds
+        - .travis/build.sh
     - stage: test
       before_script:
+        - echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
+        - chmod +x .travis/test.sh
         - docker-compose up -d postgres # start the db
       script:
-        - docker pull "${DOCKER_USERNAME}"/adaptive_learning_backend:"${IMAGE_TAG}"
-        - docker-compose run -e CC_TEST_REPORTER_ID="${CC_TEST_REPORTER_ID}" -e TRAVIS_TEST_RESULT="${TRAVIS_TEST_RESULT}" --rm web ./test.sh
+        - .travis/test.sh
