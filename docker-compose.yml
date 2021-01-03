@@ -25,7 +25,7 @@ services:
       context: ./postgres
     restart: always
     environment:
-      - SECRETHUB_CREDENTIAL
+      SECRETHUB_CREDENTIAL
       POSTGRES_USER: secrethub://petrci1/adaptive_learning_backend/dev/postgres_user
       POSTGRES_DB: secrethub://petrci1/adaptive_learning_backend/dev/postgres_db
       POSTGRES_PASSWORD: secrethub://petrci1/adaptive_learning_backend/dev/postgres_password
@@ -38,7 +38,7 @@ services:
     image: "${IMAGE_NAME}:${IMAGE_TAG}"
     build: .
     environment:
-      - SECRETHUB_CREDENTIAL
+      SECRETHUB_CREDENTIAL
       ADAPTIVE_LEARNING_DB_USER: secrethub://petrci1/adaptive_learning_backend/dev/postgres_user
       ADAPTIVE_LEARNING_DB_PASSWORD: secrethub://petrci1/adaptive_learning_backend/dev/postgres_password
       ADAPTIVE_LEARNING_DB_NAME: secrethub://petrci1/adaptive_learning_backend/dev/postgres_db
