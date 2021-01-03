@@ -3,5 +3,4 @@
 
 # Adaptive Learning Backend
 
-Django backend for my dissertation project, an adaptive learning e-learning web site.
-
+Django backend for my dissertation project, an adaptive learning e-learning website.

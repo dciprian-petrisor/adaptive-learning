@@ -16,5 +16,7 @@ docker-compose run --use-aliases -e TRAVIS_PULL_REQUEST_BRANCH -e TRAVIS_BRANCH 
 IMAGE_TAG=${IMAGE_TAG//-builder/}
 # here, all tests passed, so we can tag this image as the new base builder image for subsequent builds for this branch
 docker tag "${IMAGE_NAME}":"${IMAGE_TAG}"-builder "${IMAGE_NAME}":"${TRAVIS_BRANCH}"-builder
+# print images for debugging purposes
+docker images
 # push the new builder image for this branch, since build & tests passed and it is valid.
 docker push "${IMAGE_NAME}":"${TRAVIS_BRANCH}"-builder
