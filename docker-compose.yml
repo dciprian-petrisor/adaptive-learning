@@ -25,10 +25,10 @@ services:
       context: ./postgres
     restart: always
     environment:
-      SECRETHUB_CREDENTIAL
-      POSTGRES_USER: secrethub://petrci1/adaptive_learning_backend/dev/postgres_user
-      POSTGRES_DB: secrethub://petrci1/adaptive_learning_backend/dev/postgres_db
-      POSTGRES_PASSWORD: secrethub://petrci1/adaptive_learning_backend/dev/postgres_password
+      - SECRETHUB_CREDENTIAL
+      - POSTGRES_USER: secrethub://petrci1/adaptive_learning_backend/dev/postgres_user
+      - POSTGRES_DB: secrethub://petrci1/adaptive_learning_backend/dev/postgres_db
+      - POSTGRES_PASSWORD: secrethub://petrci1/adaptive_learning_backend/dev/postgres_password
     networks:
       adaptive_learning_network:
     volumes:
@@ -38,14 +38,14 @@ services:
     image: "${IMAGE_NAME}:${IMAGE_TAG}"
     build: .
     environment:
-      SECRETHUB_CREDENTIAL
-      ADAPTIVE_LEARNING_DB_USER: secrethub://petrci1/adaptive_learning_backend/dev/postgres_user
-      ADAPTIVE_LEARNING_DB_PASSWORD: secrethub://petrci1/adaptive_learning_backend/dev/postgres_password
-      ADAPTIVE_LEARNING_DB_NAME: secrethub://petrci1/adaptive_learning_backend/dev/postgres_db
-      ADAPTIVE_LEARNING_DB_HOST: postgres
-      ADAPTIVE_LEARNING_DB_PORT: 5432
-      ADAPTIVE_LEARNING_SMTP_USER: secrethub://petrci1/adaptive_learning_backend/dev/smtp_user
-      ADAPTIVE_LEARNING_SMTP_PASSWORD: secrethub://petrci1/adaptive_learning_backend/dev/smtp_password
+      - SECRETHUB_CREDENTIAL
+      - ADAPTIVE_LEARNING_DB_USER: secrethub://petrci1/adaptive_learning_backend/dev/postgres_user
+      - ADAPTIVE_LEARNING_DB_PASSWORD: secrethub://petrci1/adaptive_learning_backend/dev/postgres_password
+      - ADAPTIVE_LEARNING_DB_NAME: secrethub://petrci1/adaptive_learning_backend/dev/postgres_db
+      - ADAPTIVE_LEARNING_DB_HOST: postgres
+      - ADAPTIVE_LEARNING_DB_PORT: 5432
+      - ADAPTIVE_LEARNING_SMTP_USER: secrethub://petrci1/adaptive_learning_backend/dev/smtp_user
+      - ADAPTIVE_LEARNING_SMTP_PASSWORD: secrethub://petrci1/adaptive_learning_backend/dev/smtp_password
     networks:
       adaptive_learning_network:
     depends_on:
