@@ -8,9 +8,10 @@ dependencies:
   - Django
   - graphene-django
   - psycopg2
-  - python-dotenv
   - coverage
   - pip:
       - gunicorn
       - setproctitle
+      - django-graphql-jwt
+      - django-graphql-auth
 prefix: C:\Users\dcipr\.conda\envs\adaptive_learning

@@ -6,6 +6,8 @@ services:
 env:
   jobs:
     - IMAGE_TAG="${TRAVIS_COMMIT}" IMAGE_NAME="${DOCKER_USERNAME}/adaptive_learning_backend"
+      NGINX_IMAGE_TAG="${TRAVIS_COMMIT}" NGINX_IMAGE_NAME="${DOCKER_USERNAME}/adaptive_learning_backend_nginx"
+      POSTGRES_IMAGE_TAG="${TRAVIS_COMMIT}" POSTGRES_IMAGE_NAME="${DOCKER_USERNAME}/adaptive_learning_backend_postgres"
 
 jobs:
   include:
@@ -19,6 +21,5 @@ jobs:
       before_script:
         - echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
         - chmod +x .travis/test.sh
-        - docker-compose up -d postgres # start the db
       script:
         - .travis/test.sh

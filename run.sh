@@ -3,6 +3,10 @@ set -e
 set -v
 set -x
 
+# install secret hub
+apt install curl --yes
+curl https://apt.secrethub.io | bash
+
 # Name of the application
 NAME="backend"
 DJANGODIR=/app
@@ -15,10 +19,10 @@ export DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE
 export PYTHONPATH=$DJANGODIR:$PYTHONPATH
 
 # migrate
-conda run --no-capture-output -n adaptive_learning python resillient_migrate.py
-conda run --no-capture-output -n adaptive_learning python manage.py collectstatic --noinput
+secrethub run -- conda run --no-capture-output -n adaptive_learning python resillient_migrate.py
+secrethub run -- conda run --no-capture-output -n adaptive_learning python manage.py collectstatic --noinput
 # Start your Django Unicorn
-conda run --no-capture-output -n adaptive_learning gunicorn ${DJANGO_WSGI_MODULE}:application \
+secrethub run -- conda run --no-capture-output -n adaptive_learning gunicorn ${DJANGO_WSGI_MODULE}:application \
   --name $NAME \
   --workers $NUM_WORKERS \
   --bind=0.0.0.0:8000 \

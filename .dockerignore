@@ -4,3 +4,4 @@ build.cmd
 Dockerfile
 docker-compose.yml
 LICENSE
+nginx

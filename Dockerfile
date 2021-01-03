@@ -13,4 +13,5 @@ SHELL ["/bin/bash", "-c"]
 COPY --from=build /opt/conda/envs /opt/conda/envs
 COPY --from=build /app /app
 RUN rm -rf /app/tests
+ENV DJANGO_SECRET_KEY=secrethub://petrci1/adaptive_learning_backend/dev/django_secret_key
 CMD ["./run.sh"]
