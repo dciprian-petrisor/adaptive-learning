@@ -3,10 +3,6 @@ set -e
 set -v
 set -x
 
-# install secret hub
-apt install curl --yes
-curl https://apt.secrethub.io | bash
-
 # Name of the application
 NAME="backend"
 DJANGODIR=/app

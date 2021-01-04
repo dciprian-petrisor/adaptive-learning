@@ -10,6 +10,9 @@ RUN chmod +x *.sh
 FROM continuumio/miniconda3
 WORKDIR /app
 SHELL ["/bin/bash", "-c"]
+# install secret hub
+RUN apt install curl --yes
+RUN curl https://apt.secrethub.io | bash
 COPY --from=build /opt/conda/envs /opt/conda/envs
 COPY --from=build /app /app
 RUN rm -rf /app/tests
