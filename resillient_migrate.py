@@ -11,6 +11,9 @@ port = os.getenv('ADAPTIVE_LEARNING_DB_PORT', '5432')
 
 
 def migrate():
+    """Runs manage.py makemigrations and manage.py migrate only after the database has been detected as running
+    without interruptions for a specified amount of time.
+    """
     # max out at 30 seconds
     timeout_time = time.time() + 30
     # save the initial time the DB responded
