@@ -12,8 +12,9 @@ docker pull "${NGINX_IMAGE_NAME}":"${NGINX_IMAGE_TAG}"
 docker pull "${POSTGRES_IMAGE_NAME}":"${POSTGRES_IMAGE_TAG}"
 # adding builder to the image tag utilized in the docker-compose.yml, so our image contains the tests as well
 IMAGE_TAG="${IMAGE_TAG}-builder"
-# start nginx as well for integration testing
-docker-compose up -d nginx postgres
+# start dependent services
+docker-compose up -d postgres
+docker-compose up -d nginx
 # run the tests via docker compose, overriding the image tag so we use the builder image pulled above, which contains the tests.
 docker-compose run --use-aliases -e SECRETHUB_CREDENTIAL -e TRAVIS_PULL_REQUEST_BRANCH -e TRAVIS_BRANCH -e TRAVIS_PULL_REQUEST_SHA -e TRAVIS_COMMIT -e CC_TEST_REPORTER_ID="${CC_TEST_REPORTER_ID}" --rm web ./test.sh
 # set the image back to what it was
