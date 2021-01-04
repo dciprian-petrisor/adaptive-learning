@@ -14,7 +14,7 @@ docker pull "${POSTGRES_IMAGE_NAME}":"${POSTGRES_IMAGE_TAG}"
 IMAGE_TAG="${IMAGE_TAG}-builder"
 # start dependent services
 docker-compose up -d postgres
-docker-compose up -d nginx
+docker-compose up -d --no-deps nginx
 # run the tests via docker compose, overriding the image tag so we use the builder image pulled above, which contains the tests.
 docker-compose run --use-aliases -e SECRETHUB_CREDENTIAL -e TRAVIS_PULL_REQUEST_BRANCH -e TRAVIS_BRANCH -e TRAVIS_PULL_REQUEST_SHA -e TRAVIS_COMMIT -e CC_TEST_REPORTER_ID="${CC_TEST_REPORTER_ID}" --rm web ./test.sh
 # set the image back to what it was
