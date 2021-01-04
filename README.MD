@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.com/dciprian-petrisor/adaptive_learning_backend.svg?branch=main)](https://travis-ci.com/dciprian-petrisor/adaptive_learning_backend)
 [![Maintainability](https://api.codeclimate.com/v1/badges/cc332b27e3db3df7313a/maintainability)](https://codeclimate.com/github/dciprian-petrisor/adaptive_learning_backend/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/cc332b27e3db3df7313a/test_coverage)](https://codeclimate.com/github/dciprian-petrisor/adaptive_learning_backend/test_coverage)
 
