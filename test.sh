@@ -3,8 +3,6 @@
 set -v
 set -x
 
-env
-
 apt install --yes curl # required to download test reporter
 curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 >./cc-test-reporter
 chmod +x ./cc-test-reporter                                                                           # make it executable
