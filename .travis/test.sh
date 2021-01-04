@@ -16,7 +16,7 @@ IMAGE_TAG="${IMAGE_TAG}-builder"
 docker-compose up -d postgres
 docker-compose up -d --no-deps nginx
 # run the tests via docker compose, overriding the image tag so we use the builder image pulled above, which contains the tests.
-docker-compose run --use-aliases -e SECRETHUB_CREDENTIAL -e TRAVIS_PULL_REQUEST_BRANCH -e TRAVIS_BRANCH -e TRAVIS_PULL_REQUEST_SHA -e TRAVIS_COMMIT -e CC_TEST_REPORTER_ID="${CC_TEST_REPORTER_ID}" --rm web ./test.sh
+docker-compose run --use-aliases -e TRAVIS_PULL_REQUEST_BRANCH -e TRAVIS_BRANCH -e TRAVIS_PULL_REQUEST_SHA -e TRAVIS_COMMIT -e CC_TEST_REPORTER_ID="${CC_TEST_REPORTER_ID}" --rm web ./test.sh
 # set the image back to what it was
 IMAGE_TAG=${IMAGE_TAG//-builder/}
 # here, all tests passed, so we can tag this image as the new base builder image for subsequent builds for this branch
