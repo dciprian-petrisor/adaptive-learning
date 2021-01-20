@@ -7,11 +7,9 @@ RUN apt install libpq-dev --yes
 RUN apt install gcc --yes
 RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
 RUN curl https://apt.secrethub.io | bash
-COPY poetry.lock /poetry/
-COPY pyproject.toml /poetry/
-RUN ~/.poetry/bin/poetry install
 WORKDIR /app
 COPY . /app/
+RUN ~/.poetry/bin/poetry install
 RUN chmod +x *.sh
 
 FROM python:3.8.7-slim-buster
