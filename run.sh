@@ -15,12 +15,12 @@ export DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE
 export PYTHONPATH=$DJANGODIR:$PYTHONPATH
 
 # migrate
-secrethub run -- conda run --no-capture-output -n adaptive_learning python resillient_migrate.py
-secrethub run -- conda run --no-capture-output -n adaptive_learning python manage.py collectstatic --noinput
+secrethub run -- python resillient_migrate.py
+secrethub run -- python manage.py collectstatic --noinput
 # Start your Django Unicorn
-secrethub run -- conda run --no-capture-output -n adaptive_learning gunicorn ${DJANGO_WSGI_MODULE}:application \
-  --name $NAME \
-  --workers $NUM_WORKERS \
-  --bind=0.0.0.0:8000 \
-  --log-level=debug \
-  --log-file=-
+secrethub run -- gunicorn ${DJANGO_WSGI_MODULE}:application \
+--name $NAME \
+--workers $NUM_WORKERS \
+--bind=0.0.0.0:8000 \
+--log-level=debug \
+--log-file=-

@@ -4,8 +4,12 @@ set -e
 set -v
 set -x
 
-# try to pull the latest build layer image for this branch, to speed up builds
-docker pull "${IMAGE_NAME}":"${TRAVIS_BRANCH}"-builder || true
+if ! [[ "$TRAVIS_COMMIT_MESSAGE" =~ .*\[skip-cache\].* ]];
+then
+  # try to pull the latest build layer image for this branch, to speed up builds
+  docker pull "${IMAGE_NAME}":"${TRAVIS_BRANCH}"-builder || true;
+fi ;
+
 # build the nginx image; tag it as NGINX_IMAGE_TAG
 docker build -t "${NGINX_IMAGE_NAME}":"${NGINX_IMAGE_TAG}" ./nginx
 # build he postgres image; tag it as POSTGRES_IMAGE_TAG
