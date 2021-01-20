@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "adaptive_learning_backend"
+version = "0.1.0"
+description = "open source adaptive-learning application written for my dissertation"
+authors = ["Petrisor Ciprian <dciprian.petrisor@gmail.com>"]
+license = "Apache-2.0 License"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+graphene-django = "^2.15.0"
+psycopg2 = "^2.8.6"
+coverage = "^5.3.1"
+gunicorn = "^20.0.4"
+PyJWT = "1.7.1"
+django-graphql-jwt = "0.3.0"
+django-graphql-auth = "^0.3.15"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
