@@ -8,7 +8,7 @@ services:
   nginx:
     image: "${NGINX_IMAGE_NAME}:${NGINX_IMAGE_TAG}"
     build:
-      context: ./nginx
+      context: docker/nginx
     restart: always
     ports:
       - "80:80"
@@ -22,7 +22,7 @@ services:
   postgres:
     image: "${POSTGRES_IMAGE_NAME}:${POSTGRES_IMAGE_TAG}"
     build:
-      context: ./postgres
+      context: docker/postgres
     restart: always
     environment:
       - POSTGRES_USER=secrethub://petrci1/adaptive_learning_backend/dev/postgres_user
@@ -46,6 +46,7 @@ services:
       - ADAPTIVE_LEARNING_SMTP_USER=secrethub://petrci1/adaptive_learning_backend/dev/smtp_user
       - ADAPTIVE_LEARNING_SMTP_PASSWORD:=secrethub://petrci1/adaptive_learning_backend/dev/smtp_password
       - SECRETHUB_CREDENTIAL
+      - ADAPTIVE_LEARNING_DEBUG
     networks:
       adaptive_learning_network:
     depends_on:

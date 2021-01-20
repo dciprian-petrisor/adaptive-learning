@@ -1,7 +1,8 @@
-build.cmd
+scripts/build.cmd
 .gitignore
 .travis.yml
 Dockerfile
 docker-compose.yml
 LICENSE
-nginx
+docker/nginx
+docker/postgres

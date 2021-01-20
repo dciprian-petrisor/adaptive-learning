@@ -1,21 +1,27 @@
-FROM continuumio/miniconda3 AS build
-WORKDIR /conda
-SHELL ["/bin/bash", "-c"]
-RUN apt install curl --yes
+FROM python:3.8.7-slim-buster AS build
+WORKDIR /poetry
+RUN apt update -y && apt install curl libc6-dev libpq-dev gcc -y && rm -rf /var/lib/apt/lists/*
+RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
 RUN curl https://apt.secrethub.io | bash
-COPY conda_env.yml /conda/
-RUN conda env create -f conda_env.yml
+SHELL ["/bin/bash", "-lc"]
 WORKDIR /app
 COPY . /app/
-RUN chmod +x *.sh
+RUN poetry config virtualenvs.create true
+RUN poetry config virtualenvs.in-project true
+RUN poetry install --no-interaction --no-ansi
 
-FROM continuumio/miniconda3
+RUN find . -type f -iname "*.sh" -exec chmod +x {} \;
+
+FROM python:3.8.7-slim-buster
 WORKDIR /app
-SHELL ["/bin/bash", "-c"]
-RUN apt install curl --yes
+ENV VIRTUAL_ENV="/app/.venv"
+RUN python3 -m venv $VIRTUAL_ENV
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+
+ENV DJANGO_SECRET_KEY=secrethub://petrci1/adaptive_learning_backend/dev/django_secret_key
+RUN apt update -y && apt install curl libpq-dev -y && rm -rf /var/lib/apt/lists/*
 RUN curl https://apt.secrethub.io | bash
-COPY --from=build /opt/conda/envs /opt/conda/envs
 COPY --from=build /app /app
 RUN rm -rf /app/tests
-ENV DJANGO_SECRET_KEY=secrethub://petrci1/adaptive_learning_backend/dev/django_secret_key
-CMD ["./run.sh"]
+
+CMD ["./scripts/docker/run.sh"]
