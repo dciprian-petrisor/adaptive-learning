@@ -4,7 +4,7 @@ set -e
 set -v
 set -x
 
-if ! [[ $TRAVIS_COMMIT_MESSAGE =~ .*\[skip_cache\].* ]];
+if ! [[ "$TRAVIS_COMMIT_MESSAGE" =~ .*\[skip-cache\].* ]];
 then
   # pull build & test image for this commit
   docker pull "${IMAGE_NAME}":"${IMAGE_TAG}"-builder
