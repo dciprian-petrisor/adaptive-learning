@@ -4,15 +4,13 @@ set -e
 set -v
 set -x
 
-if ! [[ "$TRAVIS_COMMIT_MESSAGE" =~ .*\[skip-cache\].* ]];
-then
-  # pull build & test image for this commit
-  docker pull "${IMAGE_NAME}":"${IMAGE_TAG}"-builder
-  # pull the nginx image for this commit
-  docker pull "${NGINX_IMAGE_NAME}":"${NGINX_IMAGE_TAG}"
-  # pull the postgres image for this commit
-  docker pull "${POSTGRES_IMAGE_NAME}":"${POSTGRES_IMAGE_TAG}"
-fi ;
+
+# pull build & test image for this commit
+docker pull "${IMAGE_NAME}":"${IMAGE_TAG}"-builder
+# pull the nginx image for this commit
+docker pull "${NGINX_IMAGE_NAME}":"${NGINX_IMAGE_TAG}"
+# pull the postgres image for this commit
+docker pull "${POSTGRES_IMAGE_NAME}":"${POSTGRES_IMAGE_TAG}"
 
 # adding builder to the image tag utilized in the docker-compose.yml, so our image contains the tests as well
 IMAGE_TAG="${IMAGE_TAG}-builder"
