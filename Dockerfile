@@ -9,7 +9,8 @@ RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-
 RUN curl https://apt.secrethub.io | bash
 WORKDIR /app
 COPY . /app/
-RUN ~/.poetry/bin/poetry install --dev
+RUN ~/.poetry/bin/poetry config virtualenvs.create false
+RUN ~/.poetry/bin/poetry install --no-interaction --no-ansi
 RUN chmod +x *.sh
 
 FROM python:3.8.7-slim-buster
