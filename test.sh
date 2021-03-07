@@ -3,6 +3,10 @@
 set -v
 set -x
 
+export VIRTUAL_ENV="/app/.venv"
+python3 -m venv $VIRTUAL_ENV
+export PATH="$VIRTUAL_ENV/bin:$PATH"
+
 apt install --yes git # required to download test reporter
 curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 >./cc-test-reporter
 chmod +x ./cc-test-reporter                                                   # make it executable

@@ -4,7 +4,7 @@ set -e
 set -v
 set -x
 
-if ! [[ "$TRAVIS_COMMIT_MESSAGE" =~ .*\[skip_cache\].* ]];
+if ! [[ "$TRAVIS_COMMIT_MESSAGE" =~ .*\[skip-cache\].* ]];
 then
   # try to pull the latest build layer image for this branch, to speed up builds
   docker pull "${IMAGE_NAME}":"${TRAVIS_BRANCH}"-builder || true;
