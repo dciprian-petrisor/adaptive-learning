@@ -13,7 +13,10 @@ RUN chmod +x *.sh
 
 FROM python:3.8.7-slim-buster
 WORKDIR /app
-ENV PATH="/app/.venv/bin:$PATH"
+ENV VIRTUAL_ENV="/app/.venv"
+RUN python3 -m venv $VIRTUAL_ENV
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+
 ENV DJANGO_SECRET_KEY=secrethub://petrci1/adaptive_learning_backend/dev/django_secret_key
 RUN apt update -y && apt install curl libpq-dev --no-install-recommends -y && rm -rf /var/lib/apt/lists/*
 RUN curl https://apt.secrethub.io | bash
