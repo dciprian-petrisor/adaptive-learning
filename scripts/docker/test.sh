@@ -3,6 +3,10 @@
 set -v
 set -x
 
+BASEDIR=$(dirname "$0")
+PROJECT_ROOT=$(dirname $(dirname "$BASEDIR"))
+pushd $PROJECT_ROOT
+
 export VIRTUAL_ENV="/app/.venv"
 python3 -m venv $VIRTUAL_ENV
 export PATH="$VIRTUAL_ENV/bin:$PATH"

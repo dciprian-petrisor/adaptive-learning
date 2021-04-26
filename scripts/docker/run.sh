@@ -3,6 +3,9 @@ set -e
 set -v
 set -x
 
+BASEDIR=$(dirname "$0")
+PROJECT_ROOT=$(dirname $(dirname "$BASEDIR"))
+pushd $PROJECT_ROOT
 # Name of the application
 NAME="backend"
 DJANGODIR=/app

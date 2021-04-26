@@ -24,4 +24,4 @@ RUN curl https://apt.secrethub.io | bash
 COPY --from=build /app /app
 RUN rm -rf /app/tests
 
-CMD ["./run.sh"]
+CMD ["./scripts/docker/run.sh"]
