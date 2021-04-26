@@ -10,7 +10,7 @@ RUN poetry config virtualenvs.create true
 RUN poetry config virtualenvs.in-project true
 RUN poetry install --no-interaction --no-ansi
 
-RUN chmod +x *.sh
+RUN find . -type f -iname "*.sh" -exec chmod +x {} \;
 
 FROM python:3.8.7-slim-buster
 WORKDIR /app

@@ -1,6 +1,7 @@
 @echo off
 
-pushd %~dp0/../
+for %%i in ("%~dp0.") do set "folder=%%~fi"
+pushd %folder%
 
 set tag="latest"
 
