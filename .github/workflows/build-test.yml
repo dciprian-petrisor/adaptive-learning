@@ -2,17 +2,19 @@ name: Python package
 
 on: [ push ]
 
-env:
-  IMAGE_TAG: '${{ GITHUB_SHA }}'
-  IMAGE_NAME: '${{ DOCKER_USERNAME }}/adaptive_learning_backend'
-  NGINX_IMAGE_TAG: '${{ GITHUB_SHA }}'
-  NGINX_IMAGE_NAME: '${{ DOCKER_USERNAME }}/adaptive_learning_backend_nginx'
-  POSTGRES_IMAGE_TAG: '${{ GITHUB_SHA }}'
-  POSTGRES_IMAGE_NAME: '${{ DOCKER_USERNAME }}/adaptive_learning_backend_postgres'
+
 
 jobs:
 
   build:
+    env:
+      IMAGE_TAG: '${{ GITHUB_SHA }}'
+      IMAGE_NAME: '${{ DOCKER_USERNAME }}/adaptive_learning_backend'
+      NGINX_IMAGE_TAG: '${{ GITHUB_SHA }}'
+      NGINX_IMAGE_NAME: '${{ DOCKER_USERNAME }}/adaptive_learning_backend_nginx'
+      POSTGRES_IMAGE_TAG: '${{ GITHUB_SHA }}'
+      POSTGRES_IMAGE_NAME: '${{ DOCKER_USERNAME }}/adaptive_learning_backend_postgres'
+
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
