@@ -1,7 +1,5 @@
-#!/usr/bin/env bash
-set -e
-set -v
-set -x
+#!/bin/bash -e
+
 
 BASEDIR=$(dirname "$0")
 PROJECT_ROOT=$(dirname $(dirname "$BASEDIR"))
@@ -26,4 +24,6 @@ secrethub run -- gunicorn ${DJANGO_WSGI_MODULE}:application \
 --workers $NUM_WORKERS \
 --bind=0.0.0.0:8000 \
 --log-level=debug \
+--capture-output \
+--enable-stdio-inheritance \
 --log-file=-

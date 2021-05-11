@@ -1,7 +1,4 @@
-#!/usr/bin/env bash
-
-set -v
-set -x
+#!/bin/bash -evx
 
 BASEDIR=$(dirname "$0")
 PROJECT_ROOT=$(dirname $(dirname "$BASEDIR"))
@@ -11,7 +8,8 @@ export VIRTUAL_ENV="/app/.venv"
 python3 -m venv $VIRTUAL_ENV
 export PATH="$VIRTUAL_ENV/bin:$PATH"
 
-apt install --yes git # required to download test reporter
+apt update -y
+apt install -y --no-install-recommends git  # required to download test reporter
 curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 >./cc-test-reporter
 chmod +x ./cc-test-reporter                                                   # make it executable
 ./cc-test-reporter before-build                                               # run before-build hook

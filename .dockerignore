@@ -1,4 +1,4 @@
-scripts/docker/build.cmd
+scripts/dev/
 .gitignore
 .travis.yml
 Dockerfile
