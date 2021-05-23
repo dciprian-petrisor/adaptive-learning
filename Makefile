@@ -23,12 +23,12 @@ shell :
 	exec 5>&1 && docker run -it --rm -v ${DOCKER_SOCKET}:${DOCKER_SOCKET} -v  ${PWD}:/app $$(${ENVS} ${DEFAULT_ENVS} docker build --target dev -q $(ARGS) . | tee /dev/fd/5) bash
 
 unittest : 
-	TESTS_PATH=${UNIT_TESTS_PATH} SECRETHUB_CREDENTIAL=${SECRETHUB_CREDENTIAL} docker compose -f docker-compose.test.yml up -V --force-recreate --remove-orphans --build --abort-on-container-exit --exit-code-from web
+	TESTS_PATH=${UNIT_TESTS_PATH} SECRETHUB_CREDENTIAL=${SECRETHUB_CREDENTIAL} docker-compose -f docker-compose.test.yml up -V --force-recreate --remove-orphans --build --abort-on-container-exit --exit-code-from web
 
 integrationtest : 
-	TESTS_PATH=${INTEGRATION_TESTS_PATH} SECRETHUB_CREDENTIAL=${SECRETHUB_CREDENTIAL} docker compose -f docker-compose.test.yml up -V --force-recreate --remove-orphans --build --abort-on-container-exit --exit-code-from web
+	TESTS_PATH=${INTEGRATION_TESTS_PATH} SECRETHUB_CREDENTIAL=${SECRETHUB_CREDENTIAL} docker-compose -f docker-compose.test.yml up -V --force-recreate --remove-orphans --build --abort-on-container-exit --exit-code-from web
 
 alltest : 
-	SECRETHUB_CREDENTIAL=${SECRETHUB_CREDENTIAL} docker compose -f docker-compose.test.yml up -V --force-recreate --remove-orphans --build --abort-on-container-exit --exit-code-from web
+	SECRETHUB_CREDENTIAL=${SECRETHUB_CREDENTIAL} docker-compose -f docker-compose.test.yml up -V --force-recreate --remove-orphans --build --abort-on-container-exit --exit-code-from web
 	
 
