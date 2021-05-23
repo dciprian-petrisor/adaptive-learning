@@ -11,8 +11,14 @@ UNIT_TESTS_PATH := tests.unit
 ifndef SECRETHUB_CREDENTIAL
 	SECRETHUB_CREDENTIAL := $(shell ./scripts/dev/load-secrethub-credentials.sh )
 endif
-export SECRETHUB_CREDENTIAL := ${SECRETHUB_CREDENTIAL}
 
+export SECRETHUB_CREDENTIAL := ${SECRETHUB_CREDENTIAL}
+export GIT_BRANCH := $(or ${GIT_BRANCH}, ${GIT_BRANCH}, '')
+export GIT_COMMIT_SHA := $(or ${GIT_COMMIT_SHA}, ${GIT_COMMIT_SHA}, '')
+export GIT_COMMITED_AT := $(or ${GIT_COMMITED_AT}, ${GIT_COMMITED_AT}, '')
+export CC_TEST_REPORTER_ID := $(or ${CC_TEST_REPORTER_ID}, ${CC_TEST_REPORTER_ID}, '')
+env:
+	env
 
 build:
 	${ENVS} docker build -t petrci1/adaptive_learning_backend:${TAG} ${ARGS} .

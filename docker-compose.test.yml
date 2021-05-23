@@ -29,6 +29,10 @@ services:
       - TESTS_PATH
       - SECRETHUB_CREDENTIAL
       - ADAPTIVE_LEARNING_DB_HOST=postgres
+      - GIT_BRANCH
+      - GIT_COMMIT_SHA
+      - GIT_COMMITED_AT
+      - CC_TEST_REPORTER_ID
     depends_on:
       - postgres
       - nginx

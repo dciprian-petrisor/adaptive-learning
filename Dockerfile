@@ -33,8 +33,8 @@ FROM dev as test
 
 ENV TESTS_PATH = ""
 RUN apt update -y \
-    && apt install -y --no-install-recommends git \
-    && curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter \
-    && chmod +x cc-test-reporter
+    && apt install -y --no-install-recommends git
+RUN curl -sSL --output /bin/cc-test-reporter https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 \
+    && chmod +x /bin/cc-test-reporter
 COPY ./ /app/
-CMD ./scripts/docker/test.sh
+CMD ["./scripts/docker/test.sh"]
