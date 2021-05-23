@@ -1,8 +1,5 @@
-version: "3.3"
+version: "3"
 
-networks:
-  adaptive_learning_network:
-    driver: bridge
 services:
 
   nginx:
@@ -12,8 +9,6 @@ services:
     restart: always
     ports:
       - "80:80"
-    networks:
-      adaptive_learning_network:
     volumes:
       - web-static:/app/static
     depends_on:
@@ -29,10 +24,13 @@ services:
       - POSTGRES_DB=secrethub://petrci1/adaptive_learning_backend/prod/postgres_db
       - POSTGRES_PASSWORD=secrethub://petrci1/adaptive_learning_backend/prod/postgres_password
       - SECRETHUB_CREDENTIAL
-    networks:
-      adaptive_learning_network:
     volumes:
       - pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   web:
     image: "${IMAGE_NAME}:${IMAGE_TAG}"
@@ -49,11 +47,7 @@ services:
       - ADAPTIVE_LEARNING_SMTP_PASSWORD:=secrethub://petrci1/adaptive_learning_backend/prod/smtp_password
       - SECRETHUB_CREDENTIAL
       - ADAPTIVE_LEARNING_DEBUG
-    networks:
-      adaptive_learning_network:
     depends_on:
-      - postgres
-    links:
       - postgres
     volumes:
       - web-static:/app/static

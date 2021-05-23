@@ -19,4 +19,4 @@ export PYTHONPATH=$DJANGODIR:$PYTHONPATH
 secrethub run -- python resillient_migrate.py
 secrethub run -- python manage.py collectstatic --noinput
 # Start Django app
-secrethub run -- python manage.py runserver
+secrethub run -- python manage.py runserver 0.0.0.0:8000

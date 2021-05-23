@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-if ! [[ -z ${var+x} ]]; then
+if [ -z ${HOME+x} ]; then
   echo "HOME variable is not defined. Please define it and try again.";
   exit 1;
 fi
@@ -13,3 +13,4 @@ fi
 SECRETHUB_CREDENTIAL=$(cat "$HOME/.secrethub/credential")
 
 export SECRETHUB_CREDENTIAL
+echo $SECRETHUB_CREDENTIAL

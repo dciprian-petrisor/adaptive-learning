@@ -1,0 +1,39 @@
+version: '3'
+services:
+  nginx:
+    image: "${NGINX_IMAGE_NAME}:${NGINX_IMAGE_TAG}"
+    build:
+      context: docker/nginx
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - web-static:/app/static
+
+  postgres:
+    image: postgres:13.1
+    restart: always
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  
+  web:
+    build:
+      context: .
+      target: test
+    environment:
+      - TESTS_PATH
+      - SECRETHUB_CREDENTIAL
+    depends_on:
+      - postgres
+      - nginx
+    volumes:
+      - web-static:/app/static
+
+volumes:
+  web-static:
+      

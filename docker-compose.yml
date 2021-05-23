@@ -1,10 +1,6 @@
-version: "3.3"
+version: '3'
 
-networks:
-  adaptive_learning_network:
-    driver: bridge
 services:
-
   nginx:
     image: "${NGINX_IMAGE_NAME}:${NGINX_IMAGE_TAG}"
     build:
@@ -12,8 +8,6 @@ services:
     restart: always
     ports:
       - "80:80"
-    networks:
-      adaptive_learning_network:
     volumes:
       - web-static:/app/static
     depends_on:
@@ -24,13 +18,13 @@ services:
     build:
       context: docker/postgres
     restart: always
+    ports:
+      - "5431:5432"
     environment:
       - POSTGRES_USER=secrethub://petrci1/adaptive_learning_backend/dev/postgres_user
       - POSTGRES_DB=secrethub://petrci1/adaptive_learning_backend/dev/postgres_db
       - POSTGRES_PASSWORD=secrethub://petrci1/adaptive_learning_backend/dev/postgres_password
       - SECRETHUB_CREDENTIAL
-    networks:
-      adaptive_learning_network:
     volumes:
       - pg:/var/lib/postgresql/data
 
@@ -49,11 +43,7 @@ services:
       - ADAPTIVE_LEARNING_SMTP_PASSWORD:=secrethub://petrci1/adaptive_learning_backend/dev/smtp_password
       - SECRETHUB_CREDENTIAL
       - ADAPTIVE_LEARNING_DEBUG
-    networks:
-      adaptive_learning_network:
     depends_on:
-      - postgres
-    links:
       - postgres
     volumes:
       - ./:/app

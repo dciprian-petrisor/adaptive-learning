@@ -1,30 +1,36 @@
-FROM python:3.8.7-slim-buster as build
+FROM python:3.8.7-slim-buster as base
 
-SHELL ["/bin/bash", "-c"] 
 WORKDIR /app
+ENV DOCKER=1
+ENV PATH=${PATH}:/root/.poetry/bin
 COPY ./poetry.lock ./pyproject.toml /app/
 RUN apt update -y \
-    && apt install -y --no-install-recommends curl libc6-dev libpq-dev gcc ca-certificates \
-    && curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python \
+    && apt install -y --no-install-recommends curl ca-certificates \
+    && curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python - --no-modify-path \
     && curl https://apt.secrethub.io | bash \
-    && source /root/.profile \
     && poetry config virtualenvs.create false \
-    && poetry install --no-interaction --no-ansi \
-    && apt remove -y libc6-dev gcc \
-    && rm -rf /var/lib/apt/lists/*
-COPY ./ /app/
-RUN find . -type f -iname "*.sh" -exec chmod +x {} \;
+    && rm -rf /var/lib/apt/lists/* \
+    && poetry install --no-dev --no-interaction --no-ansi 
 
-FROM build as dev
-WORKDIR /app
+FROM base as dev
 
 ENV DJANGO_SECRET_KEY=secrethub://petrci1/adaptive_learning_backend/dev/django_secret_key
 
+RUN poetry install --no-interaction --no-ansi
+
+VOLUME ["/app"]
+
 CMD ["./scripts/docker/run-dev.sh"]
 
-FROM build as prod
+FROM base as prod
 
 ENV DJANGO_SECRET_KEY=secrethub://petrci1/adaptive_learning_backend/prod/django_secret_key
+COPY ./ /app/
 RUN rm -rf /app/tests
-
 CMD ["./scripts/docker/run-prod.sh"]
+
+FROM dev as test
+
+ENV TESTS_PATH = ""
+COPY ./ /app/
+CMD ./scripts/docker/test.sh

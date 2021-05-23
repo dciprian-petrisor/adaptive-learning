@@ -30,11 +30,8 @@ jobs:
 
       - name: Set permissions for scripts
         run: find . -type f -iname "*.sh" -exec chmod +x {} \;
-
-      - name: Build
-        run: .github/scripts/build.sh
-
+      
       - name: Test
         env:
           SECRETHUB_CREDENTIAL: ${{ secrets.SECRETHUB_CREDENTIAL }}
-        run: .github/scripts/test.sh
+        run: make -B alltest
