@@ -7,15 +7,19 @@ DOCKER_SOCKET := /var/run/docker.sock
 DEFAULT_ENVS := DOCKER_SCAN_SUGGEST=false
 INTEGRATION_TESTS_PATH := tests.integration
 UNIT_TESTS_PATH := tests.unit
-SECRETHUB_CREDENTIAL := $(shell ./scripts/dev/load-secrethub-credentials.sh )
+
+
+ifndef SECRETHUB_CREDENTIAL
+	SECRETHUB_CREDENTIAL := $(shell ./scripts/dev/load-secrethub-credentials.sh )
+endif
 
 build:
 	${ENVS} docker build -t petrci1/adaptive_learning_backend:${TAG} ${ARGS} .
 
-dev : secrethub
+dev : 
 	${ENVS} ./scripts/dev/docker-compose.sh ${ARGS}
 
-shell : secrethub
+shell :
 	exec 5>&1 && docker run -it --rm -v ${DOCKER_SOCKET}:${DOCKER_SOCKET} -v  ${PWD}:/app $$(${ENVS} ${DEFAULT_ENVS} docker build --target dev -q $(ARGS) . | tee /dev/fd/5) bash
 
 unittest : 

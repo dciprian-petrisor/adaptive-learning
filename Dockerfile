@@ -32,5 +32,8 @@ CMD ["./scripts/docker/run-prod.sh"]
 FROM dev as test
 
 ENV TESTS_PATH = ""
+RUN apt update -y \
+    && apt install -y --no-install-recommends git \
+    && curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
 COPY ./ /app/
 CMD ./scripts/docker/test.sh

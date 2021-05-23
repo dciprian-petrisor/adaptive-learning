@@ -8,9 +8,6 @@ export VIRTUAL_ENV="/app/.venv"
 python3 -m venv $VIRTUAL_ENV
 export PATH="$VIRTUAL_ENV/bin:$PATH"
 
-apt update -y
-apt install -y --no-install-recommends git  # required to download test reporter
-curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 >./cc-test-reporter
 chmod +x ./cc-test-reporter                                                   # make it executable
 ./cc-test-reporter before-build                                               # run before-build hook
 secrethub run -- coverage run --source='.' manage.py test $TESTS_PATH --noinput # run the tests
