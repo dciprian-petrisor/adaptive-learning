@@ -28,6 +28,7 @@ services:
     environment:
       - TESTS_PATH
       - SECRETHUB_CREDENTIAL
+      - ADAPTIVE_LEARNING_DB_HOST=postgres
     depends_on:
       - postgres
       - nginx

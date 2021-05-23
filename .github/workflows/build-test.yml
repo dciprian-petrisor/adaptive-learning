@@ -7,9 +7,6 @@ jobs:
   build_test:
     runs-on: ubuntu-latest
     steps:
-      - name: Install build-essentials
-        run: apt -y install build-essentials
-        
       - uses: actions/checkout@v2
       - uses: secrethub/actions/env-export@v0.2.1
         env:
