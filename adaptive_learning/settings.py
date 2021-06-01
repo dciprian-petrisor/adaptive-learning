@@ -36,11 +36,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'adaptive_learning.backend',
     'graphene_django',
     'graphql_jwt.refresh_token.apps.RefreshTokenConfig',
     'graphql_auth',
-    'django_filters'
+    'django_filters',
+    'adaptive_learning.backend',
 
 ]
 
@@ -60,7 +60,7 @@ ROOT_URLCONF = 'adaptive_learning.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, "templates")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -168,15 +168,28 @@ GRAPHQL_JWT = {
     ]
 }
 
+GRAPHQL_AUTH = {
+    'REGISTER_MUTATION_FIELDS': {
+        'email': 'String',
+        'username': 'String',
+        'first_name': 'String',
+        "last_name": 'String'
+    },
+    "EMAIL_TEMPLATE_VARIABLES" : {
+        "frontend_domain": os.getenv('ADAPTIVE_LEARNING_FRONTEND_DOMAIN', 'localhost:8080/#')
+    },
+    'DEFAULT_FROM_EMAIL': 'adaptivelearning@adaptive-learning-platform.herokuapp.com'
+}
+
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-if not DEBUG:
-    try:
+try:
+        print('setting email backend...')
         EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
         EMAIL_HOST = 'smtp.gmail.com'
-        EMAIL_USE_TLS = True
+        EMAIL_HOST_USER = os.environ["ADAPTIVE_LEARNING_SMTP_USER"]
+        EMAIL_HOST_PASSWORD = os.environ["ADAPTIVE_LEARNING_SMTP_PASSWORD"]
         EMAIL_PORT = 587
-        EMAIL_HOST_USER = os.getenv('ADAPTIVE_LEARNING_SMTP_USER')
-        EMAIL_HOST_PASSWORD = os.getenv('ADAPTIVE_LEARNING_SMTP_PASSWORD')
-    except Exception as e:
+        EMAIL_USE_TLS = True
+except Exception as e:
         print(e)  # TODO replace with logger once logging is integrated
         print('Defaulting to console email backend.')
