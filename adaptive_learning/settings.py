@@ -183,7 +183,6 @@ GRAPHQL_AUTH = {
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 try:
-        print('setting email backend...')
         EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
         EMAIL_HOST = 'smtp.gmail.com'
         EMAIL_HOST_USER = os.environ["ADAPTIVE_LEARNING_SMTP_USER"]

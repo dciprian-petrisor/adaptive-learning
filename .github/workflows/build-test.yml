@@ -7,6 +7,7 @@ jobs:
   build_test:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - uses: actions/github-script@0.3.0
         id: author-date
         with:
@@ -14,21 +15,30 @@ jobs:
           script: |
             const commit_details = await github.git.getCommit({owner: context.repo.owner, repo: context.repo.repo, commit_sha: context.sha});
             return commit_details.data.author.date
-      - run: GIT_COMMITED_AT=$(sed -e 's/^"//' -e 's/"$//' <<< $GIT_COMMITED_AT) && echo "GIT_COMMITED_AT=$(date --date=$GIT_COMMITED_AT '+%s')" >> $GITHUB_ENV
+      
+      - name: Import environment variables from env file
+        id: import-env
+        shell: bash
+        run: |
+          while read line; do
+            echo "$line" >> $GITHUB_ENV
+          done < ./.env
+      
+      - name: Override IMAGE_TAG and set GIT relevant variables
+        run: |
+          GIT_COMMITED_AT=$(sed -e 's/^"//' -e 's/"$//' <<< $GIT_COMMITED_AT) && echo "GIT_COMMITED_AT=$(date --date=$GIT_COMMITED_AT '+%s')" >> $GITHUB_ENV
+          IMAGE_TAG=${GITHUB_REF##*/} && echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+          echo "GIT_BRANCH=$GITHUB_REF" >> $GITHUB_ENV
+          echo "GIT_COMMIT_SHA=$GITHUB_SHA" >> $GITHUB_ENV
         env:
           GIT_COMMITED_AT: ${{ steps.author-date.outputs.result }}
-      
-      - uses: actions/checkout@v2
+          
       - uses: secrethub/actions/env-export@v0.2.1
         env:
           SECRETHUB_CREDENTIAL: ${{ secrets.SECRETHUB_CREDENTIAL }}
           DOCKER_USERNAME: secrethub://petrci1/adaptive_learning_backend/dev/docker_username
           DOCKER_ACCESS_TOKEN: secrethub://petrci1/adaptive_learning_backend/dev/docker_token
           CC_TEST_REPORTER_ID: secrethub://petrci1/adaptive_learning_backend/dev/cc_test_reporter_id
-
-      - run: |
-          echo "GIT_BRANCH=$GITHUB_REF" >> $GITHUB_ENV
-          echo "GIT_COMMIT_SHA=$GITHUB_SHA" >> $GITHUB_ENV
 
       - name: DockerHub Login
         run: echo "$DOCKER_ACCESS_TOKEN" | docker login -u "$DOCKER_USERNAME" --password-stdin
@@ -40,3 +50,9 @@ jobs:
         env:
           SECRETHUB_CREDENTIAL: ${{ secrets.SECRETHUB_CREDENTIAL }}
         run: make -B alltest
+
+      - name: Docker Push Backend Image
+        run: docker push ${IMAGE_NAME}:${IMAGE_TAG}
+      
+      - name: Docker Push Nginx Image
+        run: docker push ${NGINX_IMAGE_NAME}:${NGINX_IMAGE_TAG}
