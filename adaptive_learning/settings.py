@@ -177,18 +177,18 @@ GRAPHQL_AUTH = {
     },
     "EMAIL_TEMPLATE_VARIABLES" : {
         "frontend_domain": os.getenv('ADAPTIVE_LEARNING_FRONTEND_DOMAIN', 'localhost:8080/#')
-    },
-    'DEFAULT_FROM_EMAIL': 'adaptivelearning@adaptive-learning-platform.herokuapp.com'
+    }
 }
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 try:
-        EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-        EMAIL_HOST = 'smtp.gmail.com'
-        EMAIL_HOST_USER = os.environ["ADAPTIVE_LEARNING_SMTP_USER"]
-        EMAIL_HOST_PASSWORD = os.environ["ADAPTIVE_LEARNING_SMTP_PASSWORD"]
-        EMAIL_PORT = 587
-        EMAIL_USE_TLS = True
+    EMAIL_BACKEND = os.getenv('ADAPTIVE_LEARNING_EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
+    # used for file based backend
+    EMAIL_FILE_PATH = '/tmp/app-messages/mails'
+    # used for smtp backend
+    EMAIL_HOST = os.getenv("ADAPTIVE_LEARNING_SMTP_HOST",  None)
+    EMAIL_HOST_USER = os.getenv("ADAPTIVE_LEARNING_SMTP_USER",  None)
+    EMAIL_HOST_PASSWORD = os.getenv("ADAPTIVE_LEARNING_SMTP_PASSWORD", None)
+    EMAIL_PORT = os.getenv("ADAPTIVE_LEARNING_SMTP_PORT",  None)
+    EMAIL_USE_TLS = True
 except Exception as e:
-        print(e)  # TODO replace with logger once logging is integrated
-        print('Defaulting to console email backend.')
+    print(e)  # TODO replace with logger once logging is integrated
