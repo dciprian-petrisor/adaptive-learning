@@ -10,6 +10,7 @@ services:
       - "80:80"
     volumes:
       - web-static:/app/static
+      - ./uploads:/app/uploads
     depends_on:
       - web
 
@@ -48,6 +49,7 @@ services:
     volumes:
       - ./:/app
       - web-static:/app/static
+      - ./uploads:/app/uploads
 
 volumes:
   pg:

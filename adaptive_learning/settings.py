@@ -11,7 +11,12 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+from datetime import timedelta
 
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+PRIVATE_MEDIA_PATH = 'media/protected/documents/'
+FS_STORAGE_LOCATION = '/app/uploads'
+AUTH_USER_MODEL = 'backend.ALUser'
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -24,7 +29,7 @@ SECRET_KEY = str(os.getenv('DJANGO_SECRET_KEY'))
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = 'ADAPTIVE_LEARNING_DEBUG' in os.environ
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['localhost', 'host.docker.internal']
 
 # Application definition
 
@@ -46,11 +51,12 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'adaptive_learning.backend.middlewares.auth.AuthMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -96,7 +102,7 @@ DATABASES = {
     }
 }
 
-AUTH_USER_MODEL = 'backend.ALUser'
+
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -118,8 +124,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # CORS
 
-CORS_ALLOW_ALL_ORIGINS = True
-
+CORS_ALLOWED_ORIGIN_REGEXES = [r'^http://localhost(?::\d+)?$', r'^http://host.docker.internal(?::\d+)?$']
+CORS_ALLOW_CREDENTIALS = True
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
@@ -147,13 +153,15 @@ GRAPHENE = {
 }
 
 AUTHENTICATION_BACKENDS = [
-    'graphql_auth.backends.GraphQLAuthBackend',
     'django.contrib.auth.backends.ModelBackend',
+    'graphql_auth.backends.GraphQLAuthBackend',
 ]
 
 GRAPHQL_JWT = {
     "JWT_VERIFY_EXPIRATION": True,
     "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
+    'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=3),
+    "JWT_EXPIRATION_DELTA": timedelta(minutes=5),
     "JWT_ALLOW_ANY_CLASSES": [
         "graphql_auth.mutations.Register",
         "graphql_auth.mutations.VerifyAccount",
@@ -168,7 +176,13 @@ GRAPHQL_JWT = {
     ]
 }
 
+FRONTEND_DOMAIN_URL = os.getenv('ADAPTIVE_LEARNING_FRONTEND_DOMAIN', 'localhost:8080/#')
 GRAPHQL_AUTH = {
+    'UPDATE_MUTATION_FIELDS': {
+        "first_name": "String",
+        "last_name": "String",
+        "requires_password_reset": "Boolean"
+    },
     'REGISTER_MUTATION_FIELDS': {
         'email': 'String',
         'username': 'String',
@@ -176,7 +190,7 @@ GRAPHQL_AUTH = {
         "last_name": 'String'
     },
     "EMAIL_TEMPLATE_VARIABLES" : {
-        "frontend_domain": os.getenv('ADAPTIVE_LEARNING_FRONTEND_DOMAIN', 'localhost:8080/#')
+        "frontend_domain": FRONTEND_DOMAIN_URL
     }
 }
 
