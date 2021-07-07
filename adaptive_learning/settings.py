@@ -11,7 +11,12 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+from datetime import timedelta
 
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+PRIVATE_MEDIA_PATH = 'media/protected/documents/'
+FS_STORAGE_LOCATION = '/app/uploads'
+AUTH_USER_MODEL = 'backend.ALUser'
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -24,30 +29,34 @@ SECRET_KEY = str(os.getenv('DJANGO_SECRET_KEY'))
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = 'ADAPTIVE_LEARNING_DEBUG' in os.environ
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['localhost', 'host.docker.internal']
 
 # Application definition
 
 INSTALLED_APPS = [
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'adaptive_learning.backend',
     'graphene_django',
     'graphql_jwt.refresh_token.apps.RefreshTokenConfig',
-    "graphql_auth",
-    "django_filters"
+    'graphql_auth',
+    'django_filters',
+    'adaptive_learning.backend',
+
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'adaptive_learning.backend.middlewares.auth.AuthMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -57,7 +66,7 @@ ROOT_URLCONF = 'adaptive_learning.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, "templates")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -93,7 +102,7 @@ DATABASES = {
     }
 }
 
-AUTH_USER_MODEL = 'backend.ALUser'
+
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -113,6 +122,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# CORS
+
+CORS_ALLOWED_ORIGIN_REGEXES = [r'^http://localhost(?::\d+)?$', r'^http://host.docker.internal(?::\d+)?$']
+CORS_ALLOW_CREDENTIALS = True
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
@@ -140,13 +153,15 @@ GRAPHENE = {
 }
 
 AUTHENTICATION_BACKENDS = [
-    'graphql_auth.backends.GraphQLAuthBackend',
     'django.contrib.auth.backends.ModelBackend',
+    'graphql_auth.backends.GraphQLAuthBackend',
 ]
 
 GRAPHQL_JWT = {
     "JWT_VERIFY_EXPIRATION": True,
     "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
+    'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=3),
+    "JWT_EXPIRATION_DELTA": timedelta(minutes=5),
     "JWT_ALLOW_ANY_CLASSES": [
         "graphql_auth.mutations.Register",
         "graphql_auth.mutations.VerifyAccount",
@@ -161,15 +176,36 @@ GRAPHQL_JWT = {
     ]
 }
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-if not DEBUG:
-    try:
-        EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-        EMAIL_HOST = 'smtp.gmail.com'
-        EMAIL_USE_TLS = True
-        EMAIL_PORT = 587
-        EMAIL_HOST_USER = os.getenv('ADAPTIVE_LEARNING_SMTP_USER')
-        EMAIL_HOST_PASSWORD = os.getenv('ADAPTIVE_LEARNING_SMTP_PASSWORD')
-    except Exception as e:
-        print(e)  # TODO replace with logger once logging is integrated
-        print('Defaulting to console email backend.')
+FRONTEND_DOMAIN_URL = os.getenv('ADAPTIVE_LEARNING_FRONTEND_DOMAIN', 'localhost:8080/#')
+GRAPHQL_AUTH = {
+    'ALLOW_LOGIN_NOT_VERIFIED': False,
+    'UPDATE_MUTATION_FIELDS': {
+        "first_name": "String",
+        "last_name": "String",
+        "has_completed_quiz": "Boolean",
+        "requires_password_reset": "Boolean",
+        "learning_material_preference": "String"
+    },
+    'REGISTER_MUTATION_FIELDS': {
+        'email': 'String',
+        'username': 'String',
+        'first_name': 'String',
+        "last_name": 'String'
+    },
+    "EMAIL_TEMPLATE_VARIABLES" : {
+        "frontend_domain": FRONTEND_DOMAIN_URL
+    }
+}
+
+try:
+    EMAIL_BACKEND = os.getenv('ADAPTIVE_LEARNING_EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
+    # used for file based backend
+    EMAIL_FILE_PATH = '/tmp/app-messages/mails'
+    # used for smtp backend
+    EMAIL_HOST = os.getenv("ADAPTIVE_LEARNING_SMTP_HOST",  "smtp.gmail.com")
+    EMAIL_HOST_USER = os.getenv("ADAPTIVE_LEARNING_SMTP_USER",  None)
+    EMAIL_HOST_PASSWORD = os.getenv("ADAPTIVE_LEARNING_SMTP_PASSWORD", None)
+    EMAIL_PORT = os.getenv("ADAPTIVE_LEARNING_SMTP_PORT",  587)
+    EMAIL_USE_TLS = True
+except Exception as e:
+    print(e)  # TODO replace with logger once logging is integrated

@@ -1,27 +1,40 @@
-FROM python:3.8.7-slim-buster AS build
-WORKDIR /poetry
-RUN apt update -y && apt install curl libc6-dev libpq-dev gcc -y && rm -rf /var/lib/apt/lists/*
-RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
-RUN curl https://apt.secrethub.io | bash
-SHELL ["/bin/bash", "-lc"]
-WORKDIR /app
-COPY . /app/
-RUN poetry config virtualenvs.create true
-RUN poetry config virtualenvs.in-project true
-RUN poetry install --no-interaction --no-ansi
+FROM python:3.8.7-slim-buster as base
 
-RUN find . -type f -iname "*.sh" -exec chmod +x {} \;
-
-FROM python:3.8.7-slim-buster
 WORKDIR /app
-ENV VIRTUAL_ENV="/app/.venv"
-RUN python3 -m venv $VIRTUAL_ENV
-ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+ENV DOCKER=1
+ENV PATH=${PATH}:/root/.poetry/bin
+COPY ./poetry.lock ./pyproject.toml /app/
+RUN apt update -y \
+    && apt install -y --no-install-recommends curl ca-certificates \
+    && curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python - --no-modify-path \
+    && curl https://apt.secrethub.io | bash \
+    && poetry config virtualenvs.create false \
+    && rm -rf /var/lib/apt/lists/* \
+    && poetry install --no-dev --no-interaction --no-ansi 
+
+FROM base as dev
 
 ENV DJANGO_SECRET_KEY=secrethub://petrci1/adaptive_learning_backend/dev/django_secret_key
-RUN apt update -y && apt install curl libpq-dev -y && rm -rf /var/lib/apt/lists/*
-RUN curl https://apt.secrethub.io | bash
-COPY --from=build /app /app
-RUN rm -rf /app/tests
 
-CMD ["./scripts/docker/run.sh"]
+RUN poetry install --no-interaction --no-ansi
+
+VOLUME ["/app"]
+
+CMD ["./scripts/docker/run-dev.sh"]
+
+FROM base as prod
+
+ENV DJANGO_SECRET_KEY=secrethub://petrci1/adaptive_learning_backend/prod/django_secret_key
+COPY ./ /app/
+RUN rm -rf /app/tests
+CMD ["./scripts/docker/run-prod.sh"]
+
+FROM dev as test
+
+ENV TESTS_PATH = ""
+RUN apt update -y \
+    && apt install -y --no-install-recommends git
+RUN curl -sSL --output /bin/cc-test-reporter https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 \
+    && chmod +x /bin/cc-test-reporter
+COPY ./ /app/
+CMD ["./scripts/docker/test.sh"]

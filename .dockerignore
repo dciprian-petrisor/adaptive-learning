@@ -1,8 +1,9 @@
-scripts/build.cmd
+scripts/dev/
 .gitignore
 .travis.yml
 Dockerfile
-docker-compose.yml
 LICENSE
-docker/nginx
-docker/postgres
+.git
+__pycache__
+.vscode
+.github

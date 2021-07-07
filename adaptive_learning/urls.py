@@ -14,12 +14,16 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from graphene_django.views import GraphQLView
+from django.urls import path, re_path
 from adaptive_learning.schema import schema
+from adaptive_learning import settings
+from graphene_file_upload.django import FileUploadGraphQLView
 from django.views.decorators.csrf import csrf_exempt
+from adaptive_learning.backend.views import  serve_protected_document
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('graphql/', csrf_exempt(GraphQLView.as_view(graphiql=True, schema=schema)))
+    re_path(r'^' + f'{settings.PRIVATE_MEDIA_PATH}' + r'(?P<file>.*)$', serve_protected_document, name='serve_protected_document'),
+    path('graphql/', csrf_exempt(FileUploadGraphQLView.as_view(graphiql=True, schema=schema)))
 ]

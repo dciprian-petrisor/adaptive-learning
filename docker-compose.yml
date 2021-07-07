@@ -1,10 +1,6 @@
-version: "3.3"
+version: '3'
 
-networks:
-  adaptive_learning_network:
-    driver: bridge
 services:
-
   nginx:
     image: "${NGINX_IMAGE_NAME}:${NGINX_IMAGE_TAG}"
     build:
@@ -12,10 +8,9 @@ services:
     restart: always
     ports:
       - "80:80"
-    networks:
-      adaptive_learning_network:
     volumes:
       - web-static:/app/static
+      - ./uploads:/app/uploads
     depends_on:
       - web
 
@@ -24,19 +19,21 @@ services:
     build:
       context: docker/postgres
     restart: always
+    ports:
+      - "5431:5432"
     environment:
       - POSTGRES_USER=secrethub://petrci1/adaptive_learning_backend/dev/postgres_user
       - POSTGRES_DB=secrethub://petrci1/adaptive_learning_backend/dev/postgres_db
       - POSTGRES_PASSWORD=secrethub://petrci1/adaptive_learning_backend/dev/postgres_password
       - SECRETHUB_CREDENTIAL
-    networks:
-      adaptive_learning_network:
     volumes:
       - pg:/var/lib/postgresql/data
 
   web:
     image: "${IMAGE_NAME}:${IMAGE_TAG}"
-    build: .
+    build:
+        context: .
+        target: dev
     environment:
       - ADAPTIVE_LEARNING_DB_USER=secrethub://petrci1/adaptive_learning_backend/dev/postgres_user
       - ADAPTIVE_LEARNING_DB_PASSWORD=secrethub://petrci1/adaptive_learning_backend/dev/postgres_password
@@ -44,18 +41,18 @@ services:
       - ADAPTIVE_LEARNING_DB_HOST=postgres
       - ADAPTIVE_LEARNING_DB_PORT=5432
       - ADAPTIVE_LEARNING_SMTP_USER=secrethub://petrci1/adaptive_learning_backend/dev/smtp_user
-      - ADAPTIVE_LEARNING_SMTP_PASSWORD:=secrethub://petrci1/adaptive_learning_backend/dev/smtp_password
+      - ADAPTIVE_LEARNING_SMTP_PASSWORD=secrethub://petrci1/adaptive_learning_backend/dev/smtp_password
       - SECRETHUB_CREDENTIAL
       - ADAPTIVE_LEARNING_DEBUG
-    networks:
-      adaptive_learning_network:
+      - ADAPTIVE_LEARNING_EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
     depends_on:
       - postgres
-    links:
-      - postgres
     volumes:
+      - ./:/app
       - web-static:/app/static
+      - ./uploads:/app/uploads
 
 volumes:
   pg:
   web-static:
+  app:
