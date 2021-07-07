@@ -10,6 +10,7 @@ services:
       - "80:80"
     volumes:
       - web-static:/app/static
+      - ./uploads:/app/uploads
     depends_on:
       - web
 
@@ -43,11 +44,13 @@ services:
       - ADAPTIVE_LEARNING_SMTP_PASSWORD=secrethub://petrci1/adaptive_learning_backend/dev/smtp_password
       - SECRETHUB_CREDENTIAL
       - ADAPTIVE_LEARNING_DEBUG
+      - ADAPTIVE_LEARNING_EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
     depends_on:
       - postgres
     volumes:
       - ./:/app
       - web-static:/app/static
+      - ./uploads:/app/uploads
 
 volumes:
   pg:

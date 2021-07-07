@@ -1,14 +1,16 @@
-from adaptive_learning.backend.models import ALAdminableUser, ALUser
-from graphql_auth.models import UserStatus
 from django.db import migrations
+from django.contrib.auth.hashers import make_password
 
-def create_root_user(apps, schema_editor):
-    admin_user = ALAdminableUser(email="root@gmail.com", first_name="Administrator", last_name="Administrator", username="root", is_staff=True, is_active=True, is_superuser=True, is_admin=True, requires_password_reset=True)
-    admin_user.set_password("root")
-    admin_user.save()
-    user_status = UserStatus(archived=False, verified=True, user=admin_user)
-    user_status.save()
-   
+
+def create_root_user(apps, _):
+    ALUser = apps.get_model('backend', 'ALUser')
+    admin_user = ALUser.objects.create(email="root@gmail.com", first_name="Administrator", last_name="Administrator", username="root",
+                                       is_staff=True, is_active=True, is_superuser=True, is_admin=True, requires_password_reset=True, has_completed_quiz=True, password=make_password("root"))
+
+    UserStatus = apps.get_model('graphql_auth', 'UserStatus')
+    UserStatus.objects.create(archived=False, verified=True, user=admin_user)
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
